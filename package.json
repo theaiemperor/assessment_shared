@@ -14,11 +14,19 @@
   "exports": {
     ".": {
       "import": "./dist/index.js"
+    },
+    "./global/*": {
+      "import": "./dist/global/*.js",
+      "types": "./dist/global/*.d.ts"
+    },
+    "./types/*":{
+      "types": "./dist/types/*.d.ts"
     }
   },
   "license": "AGPL-3.0-or-later",
   "packageManager": "pnpm@10.12.4",
   "devDependencies": {
+    "@types/express": "^5.0.3",
     "@types/node": "^24.2.1",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2"
