@@ -1,0 +1,26 @@
+{
+  "name": "nexeval_shared",
+  "version": "1.0.0",
+  "description": "A shared package which provides some core functionalities, set of rules and standard way to work on Nexeval.",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "keywords": [],
+  "author": "theaiemperor/Arman",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js"
+    }
+  },
+  "license": "AGPL-3.0-or-later",
+  "packageManager": "pnpm@10.12.4",
+  "devDependencies": {
+    "@types/node": "^24.2.1",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2"
+  }
+}
