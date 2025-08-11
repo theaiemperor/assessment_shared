@@ -1,23 +1,46 @@
 import { Request, Response, RequestHandler } from 'express';
 import { IObj } from '../types/common.js';
 
-export interface APIResponse<T = IObj, U = IObj> {
-    success: boolean,
-    message: string,
-    data: T,
-    meta: U
+// Base API response interface
+export interface APIResponse<T = IObj> {
+    success: boolean;
+    message: string;
+    data: T;
+    meta: IObj;
 }
 
+// Utility type for handler response
+type ResponseType<T> = Response<Partial<APIResponse<T>> & { data: T }>;
 
-// function to create custom response
-type ResponseType<T, U> = Response<APIResponse<T, U>>;
-type TypedRequestHandler<T, U> = (
+// Your typed handler type
+type TypedRequestHandler<T> = (
     req: Request,
-    res: ResponseType<T, U>,
+    res: ResponseType<T>,
     next: Function
-) => void | ResponseType<T, U> | Promise<void | ResponseType<T, U>>;
+) => void | Promise<void>;
 
-export function createResponse<T = IObj, U = IObj>(handler: TypedRequestHandler<T, U>): RequestHandler {
-    return handler;
-};
+
+
+
+// Factory to create handler with default response wrapper
+export function createResponse<T = IObj>(
+    handler: TypedRequestHandler<T>
+): RequestHandler {
+
+
+    return (req, res, next) => {
+        const originalJson = res.json.bind(res);
+
+        res.json = (body: Partial<APIResponse<T>>) => {
+            const defaultResponse: Omit<APIResponse<T>, 'data'> = {
+                success: true,
+                message: '',
+                meta: {},
+            };
+            return originalJson({ ...defaultResponse, ...body });
+        };
+
+        return handler(req, res as ResponseType<T>, next);
+    };
+}
 
