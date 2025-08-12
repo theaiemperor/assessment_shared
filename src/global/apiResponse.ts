@@ -1,46 +1,68 @@
-import { Request, Response, RequestHandler } from 'express';
-import { IObj } from '../types/common.js';
+import { Request, Response, RequestHandler } from "express";
+import { IObj } from "../types/common.js";
 
-// Base API response interface
-export interface APIResponse<T = IObj> {
-    success: boolean;
-    message: string;
-    data: T;
-    meta: IObj;
-}
+// API response type with separate success/error payloads
+export type APIResponse<Res = IObj, Err = IObj> =
+    | {
+        success: true;
+        message: string;
+        data: Res;
+        meta: IObj;
+    }
+    | {
+        success: false;
+        message: string;
+        data: Err;
+        meta: IObj;
+    };
+
+
 
 // Utility type for handler response
-type ResponseType<T> = Response<Partial<APIResponse<T>> & { data: T }>;
+type ResponseType<Res, Err> = Response<
+    | (Partial<APIResponse<Res, Err>> & { data: Res; success?: true })
+    | (Partial<APIResponse<Res, Err>> & { data: Err; success: false })
+>;
 
-// Your typed handler type
-type TypedRequestHandler<T> = (
+
+// Typed handler
+type TypedRequestHandler<Res, Err> = (
     req: Request,
-    res: ResponseType<T>,
+    res: ResponseType<Res, Err>,
     next: Function
 ) => void | Promise<void>;
 
 
 
-
-// Factory to create handler with default response wrapper
-export function createResponse<T = IObj>(
-    handler: TypedRequestHandler<T>
+// Core wrapper
+function wrapResponse<Res, Err>(
+    handler: TypedRequestHandler<Res, Err>
 ): RequestHandler {
-
-
     return (req, res, next) => {
         const originalJson = res.json.bind(res);
 
-        res.json = (body: Partial<APIResponse<T>>) => {
-            const defaultResponse: Omit<APIResponse<T>, 'data'> = {
-                success: true,
-                message: '',
+        res.json = (body: any) => {
+            const defaultResponse = {
+                message: "",
                 meta: {},
+                success: true
             };
             return originalJson({ ...defaultResponse, ...body });
         };
 
-        return handler(req, res as ResponseType<T>, next);
+        return handler(req, res as ResponseType<Res, Err>, next);
     };
 }
 
+// Template factory
+export function createResponseTemplate<Res = IObj, Err = IObj>() {
+    return (handler: TypedRequestHandler<Res, Err>): RequestHandler =>
+        wrapResponse(handler);
+}
+
+// Direct one-off
+export function createResponse<Res = IObj, Err = string>(
+    handler: TypedRequestHandler<Res, Err>
+): RequestHandler {
+    return wrapResponse(handler);
+}

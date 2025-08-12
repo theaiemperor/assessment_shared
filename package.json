@@ -7,22 +7,11 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "postbuild": "tsx script.ts"
   },
   "keywords": [],
   "author": "theaiemperor/Arman",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js"
-    },
-    "./global/*": {
-      "import": "./dist/global/*.js",
-      "types": "./dist/global/*.d.ts"
-    },
-    "./types/*": {
-      "types": "./dist/types/*.d.ts"
-    }
-  },
   "license": "AGPL-3.0-or-later",
   "packageManager": "pnpm@10.12.4",
   "devDependencies": {
@@ -32,7 +21,6 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@zodyac/zod-mongoose": "^4.1.0",
     "zod": "^4.0.17"
   }
 }
