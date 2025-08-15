@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { IObj } from "../types/common.js";
+import z from "zod/v4";
 
 
 export interface APIResponseSuccess<Res, Meta extends object> {
@@ -37,9 +38,17 @@ export type ResponseType<Res, Err, ResMeta extends object, ResErr extends object
 
 
 // Typed handler
-export type TypedRequestHandler<Res, Err, ResMeta extends object, ErrMeta extends object> = (
-    req: Request,
+export type TypedRequestHandler<
+    Res,
+    Err,
+    ResMeta extends object,
+    ErrMeta extends object,
+    ReqType extends Request = Request
+> = (
+    req: ReqType,
     res: ResponseType<Res, Err, ResMeta, ErrMeta>,
     next: Function
 ) => void | Promise<void>;
 
+
+export type SchemaType<Schema> = Request<Record<string, string>, any, z.infer<Schema>, Record<string, any>>
