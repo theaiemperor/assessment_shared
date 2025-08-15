@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
-import { APIResponse, APIResponseError, APIResponseSuccess } from "../../global/apiResponse.js";
 import { IObj } from "../../types/common.js";
+import { APIResponse, APIResponseError, APIResponseSuccess } from "../../global/apiResponseTypes.js";
 
 
 

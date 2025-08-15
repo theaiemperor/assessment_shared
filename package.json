@@ -14,14 +14,16 @@
   "author": "theaiemperor/Arman",
   "license": "AGPL-3.0-or-later",
   "packageManager": "pnpm@10.12.4",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "lodash": "^4.17.21",
+    "zod": "^4.0.17"
+  },
   "devDependencies": {
     "@types/express": "^5.0.3",
+    "@types/lodash": "^4.17.20",
     "@types/node": "^24.2.1",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2"
-  },
-  "dependencies": {
-    "axios": "^1.11.0",
-    "zod": "^4.0.17"
   }
 }
