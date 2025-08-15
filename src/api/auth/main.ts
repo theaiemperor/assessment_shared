@@ -1,13 +1,11 @@
-import { extendZod } from "@zodyac/zod-mongoose"
 import z, { ZodString } from "zod"
 
 
-extendZod(z);
+
 export const AuthMainZ = z.object({
     email: (z.email("Please use a valid email address.") as unknown as ZodString)
         .trim()
-        .toLowerCase()
-        .unique(),
+        .toLowerCase(),
 
     password: z.string()
         .min(6, "Minimum password length must be 6.")
