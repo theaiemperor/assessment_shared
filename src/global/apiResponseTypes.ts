@@ -23,7 +23,7 @@ export interface APIResponseError<Err, Meta extends object> {
 
 export type APIResponse<
     Res = IObj,
-    Err = IObj,
+    Err = string,
     ResMeta extends object = IObj,
     ErrMeta extends object = IObj
 > = APIResponseSuccess<Res, ResMeta> | APIResponseError<Err, ErrMeta>
