@@ -34,11 +34,10 @@ function wrapResponse<Res, Err, ResMeta extends object, ErrMeta extends object, 
 
 export function createResponseTemplate<
     Res = IObj,
+    Schema extends ZodType | undefined = undefined,
     Err = IObj,
     ResMeta extends object = IObj,
     ErrMeta extends object = IObj,
-    Schema extends ZodType | undefined = undefined
-
 >(schema?: Schema) {
     return (handler: TypedRequestHandler<Res, Err, ResMeta, ErrMeta, Schema extends ZodType ? SchemaType<Schema> : Request>): RequestHandler =>
         wrapResponse(handler, schema);
@@ -48,10 +47,10 @@ export function createResponseTemplate<
 
 export function createResponse<
     Res = IObj,
+    Schema extends ZodType | undefined = undefined,
     Err = IObj,
     ResMeta extends object = IObj,
     ErrMeta extends object = IObj,
-    Schema extends ZodType | undefined = undefined
 >(
     handler: TypedRequestHandler<
         Res,
