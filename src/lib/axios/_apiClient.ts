@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from "axios";
 import { IObj } from "../../types/common.js";
-import { APIResponse, APIResponseError, APIResponseSuccess } from "../../global/apiResponseTypes.js";
+import { APIResponse, APIResponseError, APIResponseSuccess } from "../express/server/apiResponseTypes.js";
 
 
 
@@ -11,7 +11,7 @@ type ComonMeta = { status: number, statusText: string };
 
 type HTTPImpl = <
     ResData = IObj,
-    ErrData = string,
+    ErrData = IObj,
     ResMeta extends object = ComonMeta,
     ErrMeta extends object = ComonMeta
 >(url: string, config?: AxiosRequestConfig) =>
@@ -56,8 +56,8 @@ export class APIClient {
 
     //  Overloads for strong typings
     createHandler(method: "get" | "delete" | "head" | "options"): <
-        ResData = IObj,
-        ErrData = string,
+        ResData = any,
+        ErrData = IObj,
         ResMeta extends object = ComonMeta,
         ErrMeta extends object = ComonMeta
     >(
@@ -68,7 +68,7 @@ export class APIClient {
     createHandler(method: "post" | "put" | "patch"): <
         body = any,
         ResData = IObj,
-        ErrData = string,
+        ErrData = IObj,
         ResMeta extends object = ComonMeta,
         ErrMeta extends object = ComonMeta
     >(
@@ -84,7 +84,7 @@ export class APIClient {
         const isDataMethod = ['post', 'put', 'patch'].includes(method);
 
         if (isDataMethod) {
-            return async <body = any, ResData = IObj, ErrData = string, ResMeta extends object = IObj, ErrMeta extends object = IObj>(
+            return async <body = any, ResData = IObj, ErrData = IObj, ResMeta extends object = IObj, ErrMeta extends object = IObj>(
                 url: string,
                 data?: body,
                 config?: AxiosRequestConfig
@@ -92,7 +92,15 @@ export class APIClient {
 
                 try {
                     const res = await (this.instance as AxiosInstance)[method]<ResData>(url, data, config);
-                    return res.data as APIResponseSuccess<ResData, ResMeta & ComonMeta>;
+                    const result = res.data as APIResponseSuccess<ResData, ResMeta & ComonMeta>;
+                    return {
+                        ...result,
+                        meta: {
+                            ...result.meta,
+                            status: res.status,
+                            statusText: res.statusText
+                        }
+                    };
 
                 } catch (err) {
                     return this.handleAxiosError<ErrData, ErrMeta & ComonMeta>(err);
@@ -101,13 +109,21 @@ export class APIClient {
         }
 
 
-        return async <ResData = IObj, ErrData = string, ResMeta extends object = IObj, ErrMeta extends object = IObj>(
+        return async <ResData = IObj, ErrData = IObj, ResMeta extends object = IObj, ErrMeta extends object = IObj>(
             url: string,
             config?: AxiosRequestConfig
         ): Promise<APIResponse<ResData, ErrData, ResMeta, ErrMeta>> => {
             try {
                 const res = await (this.instance as AxiosInstance)[method]<ResData>(url, config);
-                return res.data as APIResponseSuccess<ResData, ResMeta>;
+                const result = res.data as APIResponseSuccess<ResData, ResMeta & ComonMeta>;
+                    return {
+                        ...result,
+                        meta: {
+                            ...result.meta,
+                            status: res.status,
+                            statusText: res.statusText
+                        }
+                    };
 
             } catch (err) {
                 return this.handleAxiosError<ErrData, ErrMeta>(err);

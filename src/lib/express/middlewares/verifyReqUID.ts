@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
-import { createResponse } from "../../../global/apiResponse.js";
 import { verifyMongoUID } from "../../mongoose/verfiyMongoUID.js";
+import { createResponse } from "../server/apiResponse.js";
 
 
 export const verifyMongoUIDReq = (idName: string = "id"): RequestHandler => {

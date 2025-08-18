@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import { IObj } from "../types/common.js";
-import z from "zod/v4";
+import { Request, RequestHandler, Response } from "express";
+import z, { ZodType } from "zod/v4";
+import { IObj } from "../../../types/common.js";
 
 
 export interface APIResponseSuccess<Res, Meta extends object> {
@@ -39,10 +39,10 @@ export type ResponseType<Res, Err, ResMeta extends object, ResErr extends object
 
 // Typed handler
 export type TypedRequestHandler<
-    Res,
-    Err,
-    ResMeta extends object,
-    ErrMeta extends object,
+    Res = IObj,
+    Err = IObj,
+    ResMeta extends object = IObj,
+    ErrMeta extends object = IObj,
     ReqType extends Request = Request
 > = (
     req: ReqType,
@@ -50,5 +50,41 @@ export type TypedRequestHandler<
     next: Function
 ) => void | Promise<void>;
 
-
 export type SchemaType<Schema> = Request<Record<string, string>, any, z.infer<Schema>, Record<string, any>>
+
+
+
+
+
+export type ResponseTemplateWithoutSchema<
+    Res = IObj,
+    Err = IObj,
+    ResMeta extends object = IObj,
+    ErrMeta extends object = IObj
+> = (
+    handler: TypedRequestHandler<
+        Res,
+        Err,
+        ResMeta,
+        ErrMeta,
+        Request
+    >
+) => RequestHandler;
+
+export type ResponseTemplateWithSchema<
+  Res = IObj,
+  Schema extends ZodType = ZodType,
+  Err = IObj,
+  ResMeta extends object = IObj,
+  ErrMeta extends object = IObj
+> = (
+  handler: TypedRequestHandler<
+    Res,
+    Err,
+    ResMeta,
+    ErrMeta,
+    SchemaType<Schema>
+  >
+) => RequestHandler;
+
+

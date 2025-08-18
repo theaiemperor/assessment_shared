@@ -1,8 +1,8 @@
 import { RequestHandler } from "express";
 import _ from "lodash";
 import { z, ZodError, ZodType } from "zod/v4";
-import { ResponseType } from "../../global/apiResponseTypes.js";
 import { IObj } from "../../types/common.js";
+import { ResponseType } from "../express/server/apiResponseTypes.js";
 
 
 export function zodSchemaValidator(schema: ZodType): RequestHandler {

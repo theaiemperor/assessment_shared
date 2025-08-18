@@ -1,8 +1,8 @@
 import { Request, RequestHandler } from "express";
 import { ZodType } from "zod/v4";
-import { zodSchemaValidator } from "../lib/zod/zodValidator.js";
-import { IObj } from "../types/common.js";
-import { SchemaType, TypedRequestHandler } from "./apiResponseTypes.js";
+import { ResponseTemplateWithoutSchema, ResponseTemplateWithSchema, SchemaType, TypedRequestHandler } from "./apiResponseTypes.js";
+import { zodSchemaValidator } from "../../zod/zodValidator.js";
+import { IObj } from "../../../types/common.js";
 
 function wrapResponse<Res, Err, ResMeta extends object, ErrMeta extends object, Schema extends ZodType | undefined>(
     handler: TypedRequestHandler<Res, Err, ResMeta, ErrMeta, Schema extends ZodType ? SchemaType<Schema> : Request>,
@@ -31,6 +31,10 @@ function wrapResponse<Res, Err, ResMeta extends object, ErrMeta extends object, 
     };
 }
 
+
+
+export function createResponseTemplate<Res = IObj, Schema extends ZodType = ZodType, Err = IObj, ResMeta extends object = IObj, ErrMeta extends object = IObj>(schema: Schema): ResponseTemplateWithSchema<Res, Schema, Err, ResMeta, ErrMeta>;
+export function createResponseTemplate<Res = IObj, Schema = undefined, Err = IObj, ResMeta extends object = IObj, ErrMeta extends object = IObj>(): ResponseTemplateWithoutSchema<Res, Err, ResMeta, ErrMeta>;
 
 export function createResponseTemplate<
     Res = IObj,
