@@ -2,7 +2,7 @@ import { Request, RequestHandler } from "express";
 import { ZodType } from "zod/v4";
 import { ResponseTemplateWithoutSchema, ResponseTemplateWithSchema, SchemaType, TypedRequestHandler } from "./apiResponseTypes.js";
 import { zodSchemaValidator } from "../../zod/zodValidator.js";
-import { IObj } from "../../../types/common.js";
+import { IObj } from "../../../../types/common.js";
 
 function wrapResponse<Res, Err, ResMeta extends object, ErrMeta extends object, Schema extends ZodType | undefined>(
     handler: TypedRequestHandler<Res, Err, ResMeta, ErrMeta, Schema extends ZodType ? SchemaType<Schema> : Request>,

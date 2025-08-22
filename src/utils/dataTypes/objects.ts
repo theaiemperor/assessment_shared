@@ -1,4 +1,4 @@
-import { AnyObj, Key } from "../types/common.js";
+import { AnyObj, Key } from "../../types/common.js";
 
 
 const isObject = (v: unknown): v is Record<string, any> =>
@@ -172,20 +172,25 @@ const entries = Object.entries as <T extends AnyObj>(obj: T) => Array<[keyof T, 
 const fromEntries = <K extends PropertyKey, V>(entries: Iterable<readonly [K, V]>): Record<K, V> =>
     Object.fromEntries(entries) as Record<K, V>;
 
-
+// Converts object → query string
 const objectToQuery = (obj: Record<string, any>): string =>
     Object.entries(obj)
         .filter(([, v]) => v !== undefined && v !== null)
-        .map(([k, v]) =>
-            typeof v === "object" && !Array.isArray(v)
-                ? `${encodeURIComponent(k)}=${encodeURIComponent(JSON.stringify(v))}`
-                : Array.isArray(v)
-                    ? v.map((x) => `${encodeURIComponent(k)}=${encodeURIComponent(String(x))}`).join("&")
-                    : `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`
-        )
+        .map(([k, v]) => {
+            if (typeof v === "object" && !Array.isArray(v)) {
+                // encode nested object as JSON
+                return `${encodeURIComponent(k)}=${encodeURIComponent(JSON.stringify(v))}`;
+            } else if (Array.isArray(v)) {
+                // arrays → comma separated
+                return `${encodeURIComponent(k)}=${encodeURIComponent(v.join(","))}`;
+            } else {
+                return `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`;
+            }
+        })
         .join("&");
 
 
+// Converts query string → object
 const queryToObject = (query: string): Record<string, any> => {
     return query
         .replace(/^\?/, "")
@@ -196,18 +201,31 @@ const queryToObject = (query: string): Record<string, any> => {
             const decodedKey = decodeURIComponent(key);
             const decodedValue = decodeURIComponent(value);
 
-            try {
-                // try parse JSON values
-                acc[decodedKey] = JSON.parse(decodedValue);
-            } catch {
+            // Already set? → convert to array
+            const addValue = (val: any) => {
                 if (acc[decodedKey]) {
                     acc[decodedKey] = Array.isArray(acc[decodedKey])
-                        ? [...acc[decodedKey], decodedValue]
-                        : [acc[decodedKey], decodedValue];
+                        ? [...acc[decodedKey], val]
+                        : [acc[decodedKey], val];
                 } else {
-                    acc[decodedKey] = decodedValue;
+                    acc[decodedKey] = val;
+                }
+            };
+
+            try {
+                // Try parse JSON objects (like {"x":1})
+                const parsed = JSON.parse(decodedValue);
+                addValue(parsed);
+            } catch {
+                // Handle comma-separated arrays
+                if (decodedValue.includes(",")) {
+                    const arr = decodedValue.split(",").map(v => v.trim());
+                    addValue(arr);
+                } else {
+                    addValue(decodedValue);
                 }
             }
+
             return acc;
         }, {});
 };

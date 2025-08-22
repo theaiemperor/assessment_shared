@@ -4,7 +4,7 @@ import error from "./_shared/Error.js";
 import security from "./_shared/Security.js";
 import urls from "./_shared/URLs.js";
 
-const conf = {
+const Constants = {
     brand,
     env,
     error,
@@ -12,4 +12,4 @@ const conf = {
     urls
 }
 
-export default conf;
+export default Constants;

@@ -1,4 +1,4 @@
-import { AnyFn, Key } from "../types/common.js";
+import { AnyFn, Key } from "../../types/common.js";
 
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 

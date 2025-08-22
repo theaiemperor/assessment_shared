@@ -1,6 +1,6 @@
 import { Request, RequestHandler, Response } from "express";
 import z, { ZodType } from "zod/v4";
-import { IObj } from "../../../types/common.js";
+import { IObj } from "../../../../types/common.js";
 
 
 export interface APIResponseSuccess<Res, Meta extends object> {
