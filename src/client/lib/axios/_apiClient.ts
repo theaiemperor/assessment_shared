@@ -6,18 +6,20 @@ import { APIResponse, APIResponseError, APIResponseSuccess } from "../../../serv
 
 type HTTPMethods = 'get' | 'post' | 'put' | 'patch' | 'delete' | 'options' | 'head';
 
-type ComonMeta = { status: number, statusText: string };
+type CommonMeta = { ReqStatus: number, ReqStatusText: string };
 
 
 type HTTPImpl = <
     ResData = IObj,
     ErrData = IObj,
-    ResMeta extends object = ComonMeta,
-    ErrMeta extends object = ComonMeta
+    ResMeta extends object = CommonMeta,
+    ErrMeta extends object = CommonMeta
 >(url: string, config?: AxiosRequestConfig) =>
     Promise<APIResponse<ResData, ErrData, ResMeta, ErrMeta>>
 
 
+
+export type AxiosAPI = APIResponse<IObj, IObj, IObj & CommonMeta, IObj & CommonMeta>
 
 export class APIClient {
     instance: AxiosInstance;
@@ -27,7 +29,7 @@ export class APIClient {
     }
 
 
-    private handleAxiosError<U, ErrMeta extends object>(err: any): APIResponseError<U, ErrMeta & ComonMeta> {
+    private handleAxiosError<U, ErrMeta extends object>(err: any): APIResponseError<U, ErrMeta & CommonMeta> {
         if (err instanceof AxiosError && err.response) {
             const axiosErr = err.response.data;
 
@@ -46,9 +48,9 @@ export class APIClient {
             message: "Something went wrong",
             data: {} as U,
             meta: {
-                status: 0,
-                statusText: 'Unknown error'
-            } as ErrMeta & ComonMeta
+                ReqStatus: 0,
+                ReqStatusText: 'Unknown error'
+            } as unknown as ErrMeta & CommonMeta
         }
     }
 
@@ -58,24 +60,24 @@ export class APIClient {
     createHandler(method: "get" | "delete" | "head" | "options"): <
         ResData = any,
         ErrData = IObj,
-        ResMeta extends object = ComonMeta,
-        ErrMeta extends object = ComonMeta
+        ResMeta extends object = CommonMeta,
+        ErrMeta extends object = CommonMeta
     >(
         url: string,
         config?: AxiosRequestConfig
-    ) => Promise<APIResponse<ResData, ErrData, ResMeta & ComonMeta, ErrMeta & ComonMeta>>;
+    ) => Promise<APIResponse<ResData, ErrData, ResMeta & CommonMeta, ErrMeta & CommonMeta>>;
 
     createHandler(method: "post" | "put" | "patch"): <
         body = any,
         ResData = IObj,
         ErrData = IObj,
-        ResMeta extends object = ComonMeta,
-        ErrMeta extends object = ComonMeta
+        ResMeta extends object = CommonMeta,
+        ErrMeta extends object = CommonMeta
     >(
         url: string,
         data?: body,
         config?: AxiosRequestConfig
-    ) => Promise<APIResponse<ResData, ErrData, ResMeta & ComonMeta, ErrMeta & ComonMeta>>;
+    ) => Promise<APIResponse<ResData, ErrData, ResMeta & CommonMeta, ErrMeta & CommonMeta>>;
 
 
     // implementation of above method
@@ -88,11 +90,11 @@ export class APIClient {
                 url: string,
                 data?: body,
                 config?: AxiosRequestConfig
-            ): Promise<APIResponse<ResData, ErrData, ResMeta & ComonMeta, ErrMeta & ComonMeta>> => {
+            ): Promise<APIResponse<ResData, ErrData, ResMeta & CommonMeta, ErrMeta & CommonMeta>> => {
 
                 try {
                     const res = await (this.instance as AxiosInstance)[method]<ResData>(url, data, config);
-                    const result = res.data as APIResponseSuccess<ResData, ResMeta & ComonMeta>;
+                    const result = res.data as APIResponseSuccess<ResData, ResMeta & CommonMeta>;
                     return {
                         ...result,
                         meta: {
@@ -103,7 +105,7 @@ export class APIClient {
                     };
 
                 } catch (err) {
-                    return this.handleAxiosError<ErrData, ErrMeta & ComonMeta>(err);
+                    return this.handleAxiosError<ErrData, ErrMeta & CommonMeta>(err);
                 }
             }
         }
@@ -115,15 +117,15 @@ export class APIClient {
         ): Promise<APIResponse<ResData, ErrData, ResMeta, ErrMeta>> => {
             try {
                 const res = await (this.instance as AxiosInstance)[method]<ResData>(url, config);
-                const result = res.data as APIResponseSuccess<ResData, ResMeta & ComonMeta>;
-                    return {
-                        ...result,
-                        meta: {
-                            ...result.meta,
-                            status: res.status,
-                            statusText: res.statusText
-                        }
-                    };
+                const result = res.data as APIResponseSuccess<ResData, ResMeta & CommonMeta>;
+                return {
+                    ...result,
+                    meta: {
+                        ...result.meta,
+                        status: res.status,
+                        statusText: res.statusText
+                    }
+                };
 
             } catch (err) {
                 return this.handleAxiosError<ErrData, ErrMeta>(err);

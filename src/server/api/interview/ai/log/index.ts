@@ -17,5 +17,9 @@ export const AIInterviewLogs = {
     client: {
         getLog: getReq<IAIInterviewLog>,
         getLogs: getReq<IAIInterviewLog[]>
+    },
+
+    schemas: {
+        AIInterviewLogZ
     }
 }

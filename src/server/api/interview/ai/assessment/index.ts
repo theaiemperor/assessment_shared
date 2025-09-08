@@ -61,6 +61,10 @@ export const AIInterview = {
         publicGetInterviews: getReq<IAIInterviewClient[]>,
         publicGetInterview: getReq<IAIInterviewClient>
 
+    },
+
+    schemas: {
+        AIInterviewZ
     }
 }
 

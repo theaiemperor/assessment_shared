@@ -1,36 +1,46 @@
 import jwt, { type SignOptions, type JwtPayload, VerifyOptions } from "jsonwebtoken";
+import { IObj } from "../../../types/common.js";
 
 
 type JWTExtracted<T> = JwtPayload & { data: T };
 const { JWT_SECRET } = process.env;
 
 
-type GenerateTokenOptions = Omit<SignOptions, 'expiresIn'> & { secret?: string };
+export interface IToken {
+    data: IObj,
+    expiresInSeconds?: number
+    secret?: string
+    options?: Omit<SignOptions, 'expiresIn'>
+}
 
-export function generateToken(data: any, expiresInSeconds = 60 * 60 * 24 * 7, options?: GenerateTokenOptions): string | undefined {
+export function generateToken({ data, expiresInSeconds = 60 * 60 * 24 * 7, secret = JWT_SECRET, options }: IToken): string | undefined {
 
 
-    if (!options?.secret || !JWT_SECRET) return;
+    if (!secret) return;
 
 
     if (typeof data === "object") {
-        return jwt.sign({ data }, options?.secret || JWT_SECRET, { expiresIn: expiresInSeconds, ...options });
+        return jwt.sign({ data }, secret, { expiresIn: expiresInSeconds, ...options });
     }
     return;
 }
 
 
-type ExtractTokenOptions = VerifyOptions & { secret?: string };
 
-export function extractToken<T = JwtPayload>(token?: string, options?: ExtractTokenOptions): JWTExtracted<T> | undefined {
+export interface IExtractToken {
+    token: string
+    secret?: string
+    options?: VerifyOptions
+}
+
+export function extractToken<T = JwtPayload>({ token, secret = JWT_SECRET, options }: IExtractToken): JWTExtracted<T> | undefined {
 
     try {
 
-        if (!token) return;
-        if (!options?.secret || !JWT_SECRET) return;
+        if (!token || !secret) return;
 
         // verify token
-        const decoded = jwt.verify(token, options?.secret || JWT_SECRET, options) as any;
+        const decoded = jwt.verify(token, secret, options) as any;
 
 
         if (typeof decoded === "object" && decoded.data) {

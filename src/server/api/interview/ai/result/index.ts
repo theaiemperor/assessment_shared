@@ -2,15 +2,13 @@ import z from "zod";
 import { AIInterviewResultZ } from "../../../../../_db/mongo/interviews/AIInterview/Result.js";
 import { getReq, patchReq } from "../../../../../client/lib/axios/apiCall.js";
 import { createResponseTemplate } from "../../../../lib/express/response/apiResponse.js";
+import { IAIInterviewResultZ, IAIInterviewResultClientZ } from "./type.js";
 
 
 // Schema
 const statusZ = AIInterviewResultZ.pick({ status: true });
 
 
-// types
-export type IAIInterviewResult = z.infer<typeof AIInterviewResultZ>;
-export type IAIInterviewResultClient = Omit<z.infer<typeof AIInterviewResultZ>, 'meta'>
 
 
 
@@ -18,23 +16,27 @@ export const AIInterviewResult = {
     server: {
 
         // admin
-        adminGetResult: createResponseTemplate<IAIInterviewResult | IAIInterviewResult[]>(),
+        adminGetResult: createResponseTemplate<IAIInterviewResultZ | IAIInterviewResultZ[]>(),
 
         // builder
-        builderChangeStatus: createResponseTemplate<IAIInterviewResult, typeof statusZ>(statusZ),
+        builderChangeStatus: createResponseTemplate<IAIInterviewResultZ, typeof statusZ>(statusZ),
 
         // public
-        publicGetResult: createResponseTemplate<IAIInterviewResultClient>()
+        publicGetResult: createResponseTemplate<IAIInterviewResultClientZ>()
 
     },
 
     client: {
 
-        adminGetResult: getReq<IAIInterviewResult>,
-        adminGetResults: getReq<IAIInterviewResult[]>,
+        adminGetResult: getReq<IAIInterviewResultZ>,
+        adminGetResults: getReq<IAIInterviewResultZ[]>,
 
-        builderChangeStatus: patchReq<z.infer<typeof statusZ>, IAIInterviewResult>,
+        builderChangeStatus: patchReq<z.infer<typeof statusZ>, IAIInterviewResultZ>,
 
-        publicGetResult: getReq<IAIInterviewResultClient>
+        publicGetResult: getReq<IAIInterviewResultClientZ>
+    },
+
+    schemas:{
+        AIInterviewResultZ
     }
 }

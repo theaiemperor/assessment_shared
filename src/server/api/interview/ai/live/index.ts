@@ -1,28 +1,24 @@
-import z from "zod";
+import { AIInterviewConversationZ } from "../../../../../_db/mongo/interviews/AIInterview/Conversations.js";
 import { getReq, postReq, putReq } from "../../../../../client/lib/axios/apiCall.js";
 import { createResponseTemplate } from "../../../../lib/express/response/apiResponse.js";
-import { AIInterviewResponse_AI, AIInterviewResponse_User, AIInterviewToken } from "./schema.js";
-
-
-type AIResponse = z.infer<typeof AIInterviewResponse_AI>;
-type UserResponse = z.infer<typeof AIInterviewResponse_User>;
-
-
-type Token = z.infer<typeof AIInterviewToken>;
-
+import { AIInterviewRequest_UserZ, IAIInterview_AIResponseZ, IAIInterview_UserRequestZ, IAIInterviewTokenZ } from "./schema.js";
 
 
 export const AIInterviewLive = {
     server: {
 
-        startInterview: createResponseTemplate<Token>(),
-        startRound: createResponseTemplate<AIResponse, typeof AIInterviewResponse_User>(AIInterviewResponse_User),
-        continueChat: createResponseTemplate<AIResponse, typeof AIInterviewResponse_User>(AIInterviewResponse_User),
+        startInterview: createResponseTemplate<IAIInterviewTokenZ>(),
+        startRound: createResponseTemplate<IAIInterview_AIResponseZ, typeof AIInterviewRequest_UserZ>(AIInterviewRequest_UserZ),
+        continueChat: createResponseTemplate<IAIInterview_AIResponseZ, typeof AIInterviewRequest_UserZ>(AIInterviewRequest_UserZ),
     },
 
     client: {
-        startInterview: getReq<AIResponse>,
-        startRound: postReq<UserResponse, AIResponse>,
-        continueChat: putReq<UserResponse, AIResponse>,
+        startInterview: getReq<IAIInterview_AIResponseZ>,
+        startRound: postReq<IAIInterview_UserRequestZ, IAIInterview_AIResponseZ>,
+        continueChat: putReq<IAIInterview_UserRequestZ, IAIInterview_AIResponseZ>,
+    },
+
+    schemas: {
+        AIInterviewConversationZ
     }
 }

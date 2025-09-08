@@ -135,3 +135,6 @@ export const AIInterviewResultZ = CommonCollection.extend({
     }).describe("Metadata about the AI model generating this evaluation.")
 
 });
+
+
+export type IAIInterviewResultZ = z.infer<typeof AIInterviewResultZ>;
