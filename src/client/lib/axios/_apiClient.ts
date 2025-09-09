@@ -37,8 +37,8 @@ export class APIClient {
                 ...axiosErr,
                 meta: {
                     ...axiosErr.meta,
-                    status: err.status,
-                    statusText: err.code
+                    ReqStatus: err.status,
+                    ReqStatusText: err.code
                 }
             };
         }
@@ -99,8 +99,8 @@ export class APIClient {
                         ...result,
                         meta: {
                             ...result.meta,
-                            status: res.status,
-                            statusText: res.statusText
+                            ReqStatus: res.status,
+                            ReqStatusText: res.statusText
                         }
                     };
 
@@ -122,8 +122,8 @@ export class APIClient {
                     ...result,
                     meta: {
                         ...result.meta,
-                        status: res.status,
-                        statusText: res.statusText
+                        ReqStatus: res.status,
+                        ReqStatusText: res.statusText
                     }
                 };
 
