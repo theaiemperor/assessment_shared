@@ -1,8 +1,9 @@
 import z from "zod";
+import { createIdForSchema } from "./utils.js";
 
 const CommonCollection = z.object({
-    _id: z.string()
-        .length(24, { error: "Please provide valid _id for this data." }),
+
+    ...createIdForSchema(),
 
     tags: z.array(
         z.string().nonempty({ error: "Tag cannot be empty." })
