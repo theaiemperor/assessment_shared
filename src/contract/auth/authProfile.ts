@@ -1,7 +1,7 @@
 import { getReq, postReq, putReq } from "../../client/lib/axios/apiCall.js";
 import { AuthCoreZ, AuthZ } from "../../schema/auth/auth.js";
 import { createResponseTemplate } from "../../server/lib/express/response/apiResponse.js";
-import { AuthCreateZ, AuthUpdateZ, IAuthClientZ, IAuthCreateZ, IAuthUpdateZ } from "./types.js";
+import { AuthCreateZ, AuthUpdateZ, IAuthClientZ, IAuthCreateZ, IAuthUpdateZ } from "./schema.js";
 
 
 export const AuthProfile = {

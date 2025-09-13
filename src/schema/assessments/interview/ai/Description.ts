@@ -1,14 +1,12 @@
 import z from "zod";
 import { commonAssessment } from "../../../_shared/commonAssessment.js";
 import CommonCollection from "../../../_shared/commonCollection.js";
-import { createIdForSchema } from "../../../_shared/utils.js";
 
 
 
 
 // Each round in the interview (can be multiple)
 const RoundSchema = z.object({
-    ...createIdForSchema(),
 
     order: z.number()
         .min(1, { message: "Order cannot be less than 1" })
@@ -54,7 +52,7 @@ const common = commonAssessment({
 
 
 
-const AIInterviewCoreZ = z.object({
+const AIInterviewDescriptionCoreZ = z.object({
 
     ...common.shape,
 
@@ -122,16 +120,16 @@ const AIInterviewCoreZ = z.object({
 });
 
 
-const AIInterviewZ = z.object({
+const AIInterviewDescriptionZ = z.object({
     ...CommonCollection.shape,
-    ...AIInterviewCoreZ.shape
+    ...AIInterviewDescriptionCoreZ.shape
 });
 
 
 export {
-    AIInterviewCoreZ,
-    AIInterviewZ
+    AIInterviewDescriptionCoreZ,
+    AIInterviewDescriptionZ
 };
 
-export type IAIInterviewCoreZ = z.infer<typeof AIInterviewCoreZ>;
-export type IAIInterviewZ = z.infer<typeof AIInterviewZ>;
+export type IAIInterviewDescriptionCoreZ = z.infer<typeof AIInterviewDescriptionCoreZ>;
+export type IAIInterviewDescriptionZ = z.infer<typeof AIInterviewDescriptionZ>;

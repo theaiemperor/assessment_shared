@@ -1,11 +1,11 @@
 import z from "zod";
 import CommonCollection from "../../../_shared/commonCollection.js";
+import { createIdForSchema } from "../../../_shared/utils.js";
 
 
 const AIInterviewLogCoreZ = z.object({
 
-    interviewId: z.string()
-        .describe("The interview this log belongs to."),
+    ...createIdForSchema('interviewId'),
 
     actor: z.object({
         actorID: z.string().describe("ID of the user/admin/bot who performed the action"),

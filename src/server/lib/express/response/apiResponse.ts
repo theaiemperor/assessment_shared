@@ -4,6 +4,7 @@ import { ResponseTemplateWithoutSchema, ResponseTemplateWithSchema, SchemaType, 
 import { zodSchemaValidator } from "../../zod/zodValidator.js";
 import { IObj } from "../../../../types/common.js";
 
+// accept zod schema as Res to check validate before sending to frontend
 function wrapResponse<Res, Err, ResMeta extends object, ErrMeta extends object, Schema extends ZodType | undefined>(
     handler: TypedRequestHandler<Res, Err, ResMeta, ErrMeta, Schema extends ZodType ? SchemaType<Schema> : Request>,
     schema?: Schema): RequestHandler {

@@ -1,7 +1,7 @@
 import { getReq, postReq, putReq } from "../../../../../client/lib/axios/apiCall.js";
 import { createResponseTemplate } from "../../../../../server/lib/express/response/apiResponse.js";
 import { IObj } from "../../../../../types/common.js";
-import { AIInterviewAIResponse, AIInterviewStartNewRound, AIInterviewToken, AIInterviewUserResponse, IAIInterviewAIResponse, IAInterviewToken } from "./types.js";
+import { AIInterviewAIResponse, AIInterviewStartNewRound, AIInterviewToken, AIInterviewUserResponse, IAIInterviewAIResponse, IAInterviewToken } from "./schema.js";
 
 
 

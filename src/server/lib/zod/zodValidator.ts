@@ -5,6 +5,17 @@ import { IObj } from "../../../types/common.js";
 import { ResponseType } from "../express/response/apiResponseTypes.js";
 
 
+// Helper: set deep value using path
+function setDeepError(obj: Record<string, any>, path: (string | number)[], value: string) {
+    let current = obj;
+    for (let i = 0; i < path.length - 1; i++) {
+        const key = String(path[i]); // normalize numbers to strings
+        if (!current[key]) current[key] = {};
+        current = current[key];
+    }
+    current[String(path[path.length - 1])] = value;
+}
+
 export function zodSchemaValidator(schema: ZodType): RequestHandler {
 
 
@@ -35,12 +46,11 @@ export function zodSchemaValidator(schema: ZodType): RequestHandler {
         } catch (error) {
             if (error instanceof ZodError) {
 
-                const data = Object.fromEntries(
-                    Object.entries(z.flattenError(error).fieldErrors).map(([field, messages]) => [
-                        field,
-                        (messages as string[])?.[0] || "Invalid value",
-                    ])
-                );
+                const data: Record<string, any> = {};
+
+                for (const issue of error.issues) {
+                    setDeepError(data, issue.path as string[], issue.message);
+                }
 
 
                 res.status(422).json({
@@ -55,7 +65,7 @@ export function zodSchemaValidator(schema: ZodType): RequestHandler {
                     success: false,
                     message: 'Internal Server Error',
                     data: {},
-                    meta: { origin: 'Error occurre during zod schema validation.' }
+                    meta: { origin: 'Error occurred during zod schema validation.' }
                 });
             }
         }

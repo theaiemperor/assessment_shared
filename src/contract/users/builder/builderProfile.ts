@@ -1,7 +1,7 @@
 import { getReq, postReq, putReq } from "../../../client/lib/axios/apiCall.js";
 import { BuilderCoreZ, BuilderZ } from "../../../schema/users/builder/builderProfile.js";
 import { createResponseTemplate } from "../../../server/lib/express/response/apiResponse.js";
-import { BuilderCreateZ, BuilderUpdateZ, IBuilderClientZ, IBuilderCreateZ, IBuilderUpdateZ } from "./types.js";
+import { BuilderCreateZ, BuilderUpdateZ, IBuilderClientZ, IBuilderCreateZ, IBuilderUpdateZ } from "./schema.js";
 
 
 export const BuilderProfile = {
