@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import _ from "lodash";
-import { z, ZodError, ZodType } from "zod/v4";
+import { z, ZodError, ZodType } from "zod";
 import { IObj } from "../../../types/common.js";
 import { ResponseType } from "../express/response/apiResponseTypes.js";
 

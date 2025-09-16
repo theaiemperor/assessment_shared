@@ -1,11 +1,9 @@
 import z from "zod";
-import CommonCollection from "../../../_shared/commonCollection.js";
+import CommonSchema from "../../../_shared/commonSchema.js";
 import { createIdForSchema } from "../../../_shared/utils.js";
 
 
 const AIInterviewLogCoreZ = z.object({
-
-    ...createIdForSchema('interviewId'),
 
     actor: z.object({
         actorID: z.string().describe("ID of the user/admin/bot who performed the action"),
@@ -32,11 +30,11 @@ const AIInterviewLogCoreZ = z.object({
         .optional()
         .describe("Any extra notes or contextual info for this log entry")
 
-});
+}).merge(createIdForSchema('interviewId'));
 
 
 const AIInterviewLogZ = z.object({
-    ...CommonCollection.pick({ _id: true, createdAt: true }).shape,
+    ...CommonSchema.pick({ _id: true, createdAt: true }).shape,
     ...AIInterviewLogCoreZ.shape
 })
 

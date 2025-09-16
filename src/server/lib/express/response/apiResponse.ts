@@ -1,5 +1,5 @@
 import { Request, RequestHandler } from "express";
-import { ZodType } from "zod/v4";
+import { ZodType } from "zod";
 import { ResponseTemplateWithoutSchema, ResponseTemplateWithSchema, SchemaType, TypedRequestHandler } from "./apiResponseTypes.js";
 import { zodSchemaValidator } from "../../zod/zodValidator.js";
 import { IObj } from "../../../../types/common.js";

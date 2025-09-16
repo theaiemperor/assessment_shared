@@ -1,12 +1,10 @@
 import z from "zod";
 import { createIdForSchema } from "./utils.js";
 
-const CommonCollection = z.object({
-
-    ...createIdForSchema(),
+const CommonSchema = z.object({
 
     tags: z.array(
-        z.string().nonempty({ error: "Tag cannot be empty." })
+        z.string().nonempty('Tag cannot be empty.')
     ),
 
     createdAt: z.date()
@@ -14,6 +12,6 @@ const CommonCollection = z.object({
 
     updatedAt: z.date()
         .default(() => new Date())
-})
+}).merge(createIdForSchema())
 
-export default CommonCollection;
+export default CommonSchema;

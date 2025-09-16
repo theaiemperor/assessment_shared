@@ -1,6 +1,6 @@
 import z from "zod";
 import { commonAssessment } from "../../../_shared/commonAssessment.js";
-import CommonCollection from "../../../_shared/commonCollection.js";
+import CommonSchema from "../../../_shared/commonSchema.js";
 
 
 
@@ -53,8 +53,6 @@ const common = commonAssessment({
 
 
 const AIInterviewDescriptionCoreZ = z.object({
-
-    ...common.shape,
 
 
     roleType: z.enum([
@@ -117,11 +115,11 @@ const AIInterviewDescriptionCoreZ = z.object({
             "- Rich description (with 'what to test', 'why to test', and example questions)\n" +
             "If recruiter provides only a small note, AI must generate a full round design."
         )
-});
+}).merge(common);
 
 
 const AIInterviewDescriptionZ = z.object({
-    ...CommonCollection.shape,
+    ...CommonSchema.shape,
     ...AIInterviewDescriptionCoreZ.shape
 });
 

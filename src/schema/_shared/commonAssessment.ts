@@ -13,8 +13,6 @@ export function commonAssessment(desc: Description) {
 
     return z.object({
 
-        ...createIdForSchema('builderId'),
-
         title: z.string()
             .max(100, { message: "Title is too long" })
             .describe(desc['title']),
@@ -43,5 +41,5 @@ export function commonAssessment(desc: Description) {
         allowedGroups: z.array(z.string())
             .optional()
             .describe("Group IDs allowed to attempt this assessment (e.g., premium users).")
-    })
+    }).merge(createIdForSchema('builderId'))
 }

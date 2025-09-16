@@ -1,5 +1,5 @@
 import { Request, RequestHandler, Response } from "express";
-import z, { ZodType } from "zod/v4";
+import z, { ZodType } from "zod";
 import { IObj } from "../../../../types/common.js";
 
 
@@ -50,7 +50,7 @@ export type TypedRequestHandler<
     next: Function
 ) => void | Promise<void>;
 
-export type SchemaType<Schema> = Request<Record<string, string>, any, z.infer<Schema>, Record<string, any>>
+export type SchemaType<Schema extends ZodType> = Request<Record<string, string>, any, z.infer<Schema>, Record<string, any>>
 
 
 

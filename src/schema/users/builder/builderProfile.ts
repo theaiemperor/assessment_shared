@@ -1,5 +1,5 @@
 import z from "zod";
-import CommonCollection from "../../_shared/commonCollection.js";
+import CommonSchema from "../../_shared/commonSchema.js";
 import { createIdForSchema } from "../../_shared/utils.js";
 
 
@@ -41,8 +41,6 @@ const businessCategories = [
 
 export const BuilderCoreZ = z.object({
 
-    ...createIdForSchema('authId'),
-
     name: z.string()
         .describe('Name of the Profile holder'),
 
@@ -58,7 +56,7 @@ export const BuilderCoreZ = z.object({
     size: z.enum(['individual', 'micro', 'small', 'medium', 'large', 'enterprise'])
         .describe('Size of the business'),
 
-    category: z.enum(businessCategories, { error: "Category is required" })
+    category: z.enum(businessCategories, { required_error: "Category is required" })
         .describe('In which category current builder is falling.'),
 
     coreValues: z.string()
@@ -67,11 +65,11 @@ export const BuilderCoreZ = z.object({
     productOrServices: z.string()
         .describe('All the products or services offered.'),
 
-})
+}).merge(createIdForSchema('authId'))
 
 
 export const BuilderZ = z.object({
-    ...CommonCollection.omit({ tags: true }).shape,
+    ...CommonSchema.omit({ tags: true }).shape,
     ...BuilderCoreZ.shape
 });
 

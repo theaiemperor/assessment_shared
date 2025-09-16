@@ -1,10 +1,11 @@
 import z, { ZodString } from "zod"
-import CommonCollection from "../_shared/commonCollection.js";
+import CommonSchema from "../_shared/commonSchema.js";
 
 
 
 export const AuthCoreZ = z.object({
-    email: (z.email("Please use a valid email address.") as unknown as ZodString)
+    email: z.string()
+        .email("Please use a valid email address.")
         .trim()
         .toLowerCase(),
 
@@ -12,7 +13,8 @@ export const AuthCoreZ = z.object({
         .min(6, "Minimum password length must be 6.")
         .max(128, "Password is too long, please use small password."),
 
-    img: z.url()
+    img: z.string()
+        .url()
         .optional(),
 
     role: z.enum(['builder', 'candidate', 'admin', 'demo', 'test', 'analytics', 'management']),
@@ -29,7 +31,7 @@ export const AuthCoreZ = z.object({
 });
 
 export const AuthZ = z.object({
-    ...CommonCollection.shape,
+    ...CommonSchema.shape,
     ...AuthCoreZ.shape
 })
 

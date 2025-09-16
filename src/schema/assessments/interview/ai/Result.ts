@@ -1,5 +1,5 @@
 import z from "zod";
-import CommonCollection from "../../../_shared/commonCollection.js";
+import CommonSchema from "../../../_shared/commonSchema.js";
 import { createIdForSchema } from "../../../_shared/utils.js";
 
 
@@ -32,7 +32,7 @@ function getSchema(isInterview?: boolean) {
             .describe(`Fitment score (1-100) reflecting how well the candidate aligns with the team, culture, and role beyond technical answers in this ${view}.`),
 
         summary: z.string()
-            .max(1000, { error: "Maximum length exceeded for summary" })
+            .max(1000, "Maximum length exceeded for summary")
             .describe(`Concise narrative summary (≤1000 chars) highlighting key outcomes of the ${view}. Must avoid repeating analysis verbatim.`),
 
         skills: z.record(
@@ -46,7 +46,7 @@ function getSchema(isInterview?: boolean) {
         ).describe(`Key skills observed in the candidate during this ${view}, each with a numeric score and relative weight.`),
 
         analysis: z.string()
-            .max(3000, { error: "Maximum length exceeded for analysis" })
+            .max(3000, "Maximum length exceeded for analysis")
             .describe(`Detailed explanation (≤3000 chars) of how the candidate answered questions, covering strengths, weaknesses, reasoning depth, and behavior in this ${view}.`),
 
         pros: z.array(AIStatement)
@@ -86,11 +86,9 @@ function getSchema(isInterview?: boolean) {
     });
 }
 
-const AIInterviewResultCoreZ = z.object({
 
-    ...createIdForSchema('interviewId'),
-    ...createIdForSchema('candidateId'),
-    ...createIdForSchema('conversationsId'),
+
+const AIInterviewResultCoreZ = z.object({
 
     verdict: z.enum(["strong_hire", "hire", "neutral", "no_hire"])
         .describe("Final verdict: 'strong_hire' = excellent fit, 'hire' = good fit, 'neutral' = inconclusive, 'no_hire' = not suitable."),
@@ -126,11 +124,13 @@ const AIInterviewResultCoreZ = z.object({
         modelVersion: z.string().describe("Version number of the AI model used.")
     }).describe("Metadata about the AI model generating this evaluation.")
 
-});
+}).merge(createIdForSchema('interviewId')
+    .merge(createIdForSchema('candidateId'))
+    .merge(createIdForSchema('conversationsId')));
 
 
 const AIInterviewResultZ = z.object({
-    ...CommonCollection.shape,
+    ...CommonSchema.shape,
     ...AIInterviewResultCoreZ.shape
 })
 
